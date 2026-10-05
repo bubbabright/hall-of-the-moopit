@@ -12,6 +12,10 @@ const clamp = (v: unknown, min: number, max: number, fallback = 0) => {
   return Math.min(max, Math.max(min, Math.floor(n)));
 };
 
+function asRows<T>(value: unknown): T[] {
+  return (Array.isArray(value) ? value : []) as T[];
+}
+
 function cleanStats(raw: unknown): Record<string, number> {
   if (!raw || typeof raw !== "object") return {};
   const out: Record<string, number> = {};
@@ -66,19 +70,21 @@ export async function GET(req: Request) {
 
     const sql = await getSql();
     const limit = cipher ? 200 : 80;
-    const rows = await sql<Record<string, unknown>[]>`
-      select * from (
-        select game_id, run_id, player_id, cipher, handle, mode, difficulty, score, level,
-               stats, posted_at,
-               rank() over (partition by game_id, mode order by score desc, posted_at asc, run_id) as hall_rank
-        from hall_runs
-      ) ranked
-      where (${game} = 'all' or game_id = ${game})
-        and (${mode} = 'all' or mode = ${mode})
-        and (${cipher} = '' or cipher = ${cipher})
-      order by score desc, posted_at asc
-      limit ${limit}
-    `;
+    const rows = asRows<Record<string, unknown>>(
+      await sql`
+        select * from (
+          select game_id, run_id, player_id, cipher, handle, mode, difficulty, score, level,
+                 stats, posted_at,
+                 rank() over (partition by game_id, mode order by score desc, posted_at asc, run_id) as hall_rank
+          from hall_runs
+        ) ranked
+        where (${game} = 'all' or game_id = ${game})
+          and (${mode} = 'all' or mode = ${mode})
+          and (${cipher} = '' or cipher = ${cipher})
+        order by score desc, posted_at asc
+        limit ${limit}
+      `,
+    );
     return json(origin, rows.map((row, i) => mapRun(row, i + 1)));
   } catch (error) {
     const message = error instanceof Error ? error.message : "Could not load the hall";
@@ -118,9 +124,11 @@ export async function POST(req: Request) {
     }
 
     const sql = await getSql();
-    const existing = await sql<{ run_id: string }[]>`
-      select run_id from hall_runs where game_id = ${gameId} and run_id = ${runId} limit 1
-    `;
+    const existing = asRows<{ run_id: string }>(
+      await sql`
+        select run_id from hall_runs where game_id = ${gameId} and run_id = ${runId} limit 1
+      `,
+    );
     if (existing.length === 0) {
       await sql`
         insert into hall_runs (
@@ -134,11 +142,13 @@ export async function POST(req: Request) {
 
     await sql`update hall_runs set handle = ${handle} where player_id = ${playerId}`;
 
-    const ranked = await sql<{ n: number }[]>`
-      select count(*)::int as n from hall_runs
-      where game_id = ${gameId} and mode = ${mode}
-        and (score > ${score} or (score = ${score} and run_id <= ${runId}))
-    `;
+    const ranked = asRows<{ n: number }>(
+      await sql`
+        select count(*)::int as n from hall_runs
+        where game_id = ${gameId} and mode = ${mode}
+          and (score > ${score} or (score = ${score} and run_id <= ${runId}))
+      `,
+    );
     return json(origin, {
       ok: true,
       duplicate: existing.length > 0,
