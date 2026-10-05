@@ -1,0 +1,202 @@
+:root {
+  --bg: #000000;
+  --surface: #0a0814;
+  --fg: #f4f1ff;
+  --muted: #9b97c7;
+  --accent: #f0abfc;
+  --gold: #ffd447;
+  --font: Inter, "Segoe UI", system-ui, -apple-system, sans-serif;
+  --display: Fredoka, Inter, system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  min-height: 100%;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  color-scheme: dark;
+}
+
+button:not(:disabled), [role="button"]:not(:disabled) { cursor: pointer; }
+
+.hall {
+  width: min(42rem, 100%);
+  margin: 0 auto;
+  padding: 1.25rem 1rem 3rem;
+}
+
+.kicker {
+  margin: 0 0 0.4rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+h1, h2 {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+h1 { font-size: clamp(2rem, 8vw, 2.75rem); line-height: 1.1; }
+h2 { font-size: 1.15rem; margin: 1.25rem 0 0.6rem; }
+
+.lede {
+  margin: 0.75rem 0 0;
+  max-width: 38ch;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.cipher {
+  margin: 1rem 0 0;
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+
+.cipher span, .cipher-mark {
+  display: inline-block;
+  margin-left: 0.4rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--fg) 14%, transparent);
+  color: var(--fg);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.12em;
+}
+
+.cipher-mark {
+  margin-left: 0.35rem;
+  min-height: 44px;
+  padding: 0 0.75rem;
+  background: transparent;
+  font: inherit;
+  color: var(--fg);
+}
+
+.card {
+  margin: 1rem 0;
+  padding: 1rem 1rem 1.1rem;
+  border-radius: 24px;
+  background: var(--surface);
+  border: 1px solid color-mix(in srgb, var(--fg) 10%, transparent);
+}
+
+.label {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.input {
+  flex: 1;
+  min-height: 48px;
+  padding: 0 0.9rem;
+  border-radius: 14px;
+  border: 1px solid color-mix(in srgb, var(--fg) 16%, transparent);
+  background: #000;
+  color: var(--fg);
+  font: inherit;
+  font-size: 1rem;
+}
+
+.btn, .tab, .play {
+  min-height: 48px;
+  padding: 0 1rem;
+  border-radius: 14px;
+  border: 1px solid color-mix(in srgb, var(--fg) 16%, transparent);
+  background: transparent;
+  color: var(--fg);
+  font: inherit;
+  font-weight: 600;
+}
+
+.btn-primary, .play {
+  background: var(--gold);
+  color: #1a1200;
+  border-color: var(--gold);
+  width: 100%;
+  margin-top: 0.65rem;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0.75rem 0 0.25rem;
+}
+
+.tab { min-height: 44px; padding: 0 0.85rem; font-size: 0.9rem; }
+.tab.on {
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+}
+
+.list { list-style: none; margin: 0; padding: 0; }
+
+.item {
+  display: grid;
+  grid-template-columns: 2.4rem 1fr auto;
+  gap: 0.6rem;
+  align-items: center;
+  padding: 0.85rem 0;
+  border-top: 1px solid color-mix(in srgb, var(--fg) 8%, transparent);
+}
+
+.item.mine { background: color-mix(in srgb, var(--gold) 7%, transparent); margin: 0 -0.5rem; padding-left: 0.5rem; padding-right: 0.5rem; border-radius: 12px; }
+
+.rank {
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.who strong, .score strong { display: block; }
+.who button, .score span, .empty, .status, .fine {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.who button {
+  display: block;
+  margin: 0.15rem 0 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  text-align: left;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  color: var(--muted);
+}
+
+.score { text-align: right; font-variant-numeric: tabular-nums; }
+.empty, .status { margin: 1rem 0; }
+.plays { display: grid; gap: 0.5rem; margin-top: 1.5rem; }
+.plays a.play { margin-top: 0; }
+
+@media (min-width: 640px) {
+  .btn-primary { width: auto; }
+}
